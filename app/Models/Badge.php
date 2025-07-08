@@ -11,9 +11,8 @@ class Badge extends Model
 
     protected $fillable = [
         'nom',
-        'prénom',
-        'email',
-        'téléphone',
+        'prenom',
+        'telephone',
         'qr_code',
         'fonction',
         'organisation',

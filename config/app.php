@@ -35,6 +35,8 @@ return [
 
         Illuminate\Cache\CacheServiceProvider::class,
 
+        Illuminate\Database\DatabaseServiceProvider::class,
+
         Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
 
         Illuminate\Cookie\CookieServiceProvider::class,

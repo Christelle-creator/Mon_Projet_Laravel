@@ -56,10 +56,10 @@ class BadgeController extends Controller
     }
 
     public function create() {
-        return view('create');
+        return view('badge_form');
     }
 
-
+    
 
 // Afficher un badge (vue détail)
 public function show($id)

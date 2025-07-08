@@ -17,7 +17,7 @@
     @endif
 
     <form action="{{ route('badges.store')}}" method="POST" enctype="multipart/form-data">
-
+         @csrf
         <label>Nom:</label><br>
         <input type="text" name="nom" required><br><br>
 

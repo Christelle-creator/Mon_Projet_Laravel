@@ -1,59 +1,66 @@
 <?php
 
+
 namespace App\Http\Controllers\API;
 
-//use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\Controller;
 use App\Models\Badge;
 use Illuminate\Http\Request;
 
 class BadgeController extends Controller
 {
-    //Méthode pour retourner tous les badges
-    public function index()
+    // Affiche le formulaire de création
+    public function create()
     {
-        $badges = Badge::all();
-        return response()->json($badges);
+        return view('badge_form');
     }
 
-    //Méthode pour créer un nouveau badge
+    // Sauvegarde un nouveau badge depuis le formulaire
     public function store(Request $request)
     {
-        //Validation des données
         $request->validate([
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
             'telephone' => 'nullable|string|max:20',
-            'qr_code' => 'nullable|string|max:255',
             'fonction' => 'nullable|string|max:255',
             'organisation' => 'nullable|string|max:255',
-            'photo' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|max:2048', // gestion fichier image
             'date_badge' => 'nullable|date',
         ]);
 
-        //Contenu à mettre dans le QR code(personnalisable)
-        $data = $request->nom .' ' . $request->prenom;
+        // Gérer l'upload de la photo
+        $photoName = null;
+        if ($request->hasFile('photo')) {
+            $photoName = time() . '.' . $request->photo->extension();
+            $request->photo->move(public_path('photos'), $photoName);
+        }
 
-        //Générer le QR code au format PNG et l'encoder en base 64
-        $qrCode = QrCode::format('png')->size(200)->generate($data);
-        $qrQCodeBase64 = base64_encode($qrCode);
+        // Contenu QR code
+        $data = $request->nom . ' ' . $request->prenom;
+        // Générer le QR code en base64 (si tu veux, sinon ignore cette partie)
+        // $qrCode = QrCode::format('png')->size(200)->generate($data);
+        // $qrCodeBase64 = base64_encode($qrCode);
 
-        //Création du badge
+        // Création du badge
         $badge = Badge::create([
             'nom' => $request->nom,
             'prenom' => $request->prenom,
             'telephone' => $request->telephone,
             'fonction' => $request->fonction,
             'organisation' => $request->organisation,
-            'photo' => $request->photo,
+            'photo' => $photoName,
             'date_badge' => $request->date_badge,
-            'qr_code' => $qrQCodeBase64,
+            // 'qr_code' => $qrCodeBase64,
         ]);
 
-        return response()->json($badge, 201);
+        // Redirection vers la page du badge créé
+        return redirect()->route('badges.show', ['id' => $badge->id]);
     }
 
-    public function create() {
-        return 'Formulaire chargé!';
+    // Affiche un badge spécifique
+    public function show($id)
+    {
+        $badge = Badge::findOrFail($id);
+        return view('badge', compact('badge'));
     }
-}    
+}

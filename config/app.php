@@ -27,6 +27,8 @@ return [
     */
 
     'providers' => [
+        Illuminate\Database\DatabaseServiceProvider::class,
+
         Illuminate\Auth\AuthServiceProvider::class,
 
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
